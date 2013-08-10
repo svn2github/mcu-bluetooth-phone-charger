@@ -1,0 +1,109 @@
+C51 COMPILER V9.00   MAIN                                                                  08/11/2013 01:23:52 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include<reg52.h> 
+   2          #include <stdio.h>
+   3          
+   4          const unsigned char num[10] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0xff, 0x6f};
+   5          
+   6          unsigned char flag, a, temp;
+   7          
+   8          void num_show(unsigned char para)
+   9          {
+  10   1              if(para < 10)
+  11   1                      P0 = num[para];
+  12   1      }
+  13          
+  14          void uart0_init()
+  15          {               
+  16   1              //9600波特率对应 FFD9H
+  17   1              RCAP2L = 0xD9;
+  18   1              RCAP2H = 0xFF;
+  19   1              //RCLK、TCLK置1
+  20   1              //TR2置1
+  21   1              T2CON = 0x34;
+  22   1              //串口工作模式1，接收使能
+  23   1              SCON = 0x50;
+  24   1              
+  25   1              REN=1;    //串口允许接收
+  26   1              EA=1;     //CPU中断允许
+  27   1              
+  28   1              //允许串口中断
+  29   1              ES = 1;
+  30   1      }
+  31          
+  32          void delay_ms(int ms)
+  33          {
+  34   1              int j = 5000;
+  35   1              for(;ms>0;ms--)
+  36   1                      for(;j>0;j--);
+  37   1      }
+  38          
+  39          void send_byte(unsigned char c)
+  40          {
+  41   1              SBUF = c;
+  42   1              while(!TI);     
+  43   1              TI = 0;
+  44   1      }
+  45          
+  46          void send_str(unsigned char *s)
+  47          {
+  48   1              while(*s != '\0')
+  49   1              {
+  50   2                      send_byte(*s);
+  51   2                      s++;
+  52   2              }
+  53   1      }
+  54          
+  55          void main()
+C51 COMPILER V9.00   MAIN                                                                  08/11/2013 01:23:52 PAGE 2   
+
+  56          {
+  57   1              uart0_init();
+  58   1      
+  59   1              P0 = 0x01;
+  60   1              temp = 0;
+  61   1      
+  62   1              while(1){
+  63   2                      send_str("zhengzk\t");
+  64   2                      num_show(temp++);
+  65   2                      if(temp == 10) temp = 0;
+  66   2                      delay_ms(500);delay_ms(500);
+  67   2              }
+  68   1      }
+  69          
+  70          /*
+  71          void ser() interrupt 4
+  72          {
+  73                  RI=0;
+  74                  a=SBUF;
+  75                  //send_str("中断");
+  76                  //send_byte(a);//注意，把打log加在这里，按原则是不可以的。但是单片机处理速度慢，处理不过来，除非用队列。
+  77                  SBUF = 0xaa;
+  78                  while(!TI);     
+  79                  TI = 0;
+  80                  flag=1;
+  81          }
+  82          */
+  83          
+  84          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    150    ----
+   CONSTANT SIZE    =      9    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     13    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
