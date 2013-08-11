@@ -1,0 +1,4 @@
+"STARTUP.obj",
+"lcm_1602_main.obj" 
+TO "lcm_1602_src" 
+RAMSIZE(256) 

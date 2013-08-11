@@ -1,0 +1,308 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        08/11/2013  17:20:45  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL\C51\BIN\BL51.EXE STARTUP.obj, lcm_1602_main.obj TO lcm_1602_src RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  STARTUP.obj (?C_STARTUP)
+  lcm_1602_main.obj (LCM_1602_MAIN)
+
+
+LINK MAP OF MODULE:  lcm_1602_src (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0007H     UNIT         _DATA_GROUP_
+            IDATA   000FH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     004AH     UNIT         ?PR?LCM_INIT?LCM_1602_MAIN
+            CODE    004DH     0039H     UNIT         ?PR?_DISPLAYLISTCHAR?LCM_1602_MAIN
+            CODE    0086H     002FH     UNIT         ?PR?MAIN?LCM_1602_MAIN
+            CODE    00B5H     001CH     UNIT         ?PR?_DISPLAYONECHAR?LCM_1602_MAIN
+            CODE    00D1H     001BH     UNIT         ?PR?_LCM_WRITECOMMAND?LCM_1602_MAIN
+            CODE    00ECH     0019H     UNIT         ?PR?DELAY400MS?LCM_1602_MAIN
+            CODE    0105H     0016H     UNIT         ?CO?LCM_1602_MAIN
+            CODE    011BH     0015H     UNIT         ?PR?LCM_READSTATUS?LCM_1602_MAIN
+            CODE    0130H     0013H     UNIT         ?PR?_LCM_WRITEDATA?LCM_1602_MAIN
+            CODE    0143H     000FH     UNIT         ?PR?DELAY5MS?LCM_1602_MAIN
+            CODE    0152H     000DH     UNIT         ?PR?LCM_READDATA?LCM_1602_MAIN
+            CODE    015FH     000CH     UNIT         ?C_C51STARTUP
+
+
+
+OVERLAY MAP OF MODULE:   lcm_1602_src (?C_STARTUP)
+
+
+SEGMENT                                       DATA_GROUP 
+  +--> CALLED SEGMENT                       START    LENGTH
+-----------------------------------------------------------
+?C_C51STARTUP                               -----    -----
+  +--> ?PR?MAIN?LCM_1602_MAIN
+
+?PR?MAIN?LCM_1602_MAIN                      -----    -----
+  +--> ?PR?DELAY400MS?LCM_1602_MAIN
+  +--> ?PR?LCM_INIT?LCM_1602_MAIN
+  +--> ?PR?DELAY5MS?LCM_1602_MAIN
+  +--> ?CO?LCM_1602_MAIN
+  +--> ?PR?_DISPLAYLISTCHAR?LCM_1602_MAIN
+  +--> ?PR?_DISPLAYONECHAR?LCM_1602_MAIN
+  +--> ?PR?LCM_READDATA?LCM_1602_MAIN
+
+BL51 BANKED LINKER/LOCATER V6.22                                                      08/11/2013  17:20:45  PAGE 2
+
+
+?PR?LCM_INIT?LCM_1602_MAIN                  -----    -----
+  +--> ?PR?_LCM_WRITECOMMAND?LCM_1602_MAIN
+  +--> ?PR?DELAY5MS?LCM_1602_MAIN
+
+?PR?_LCM_WRITECOMMAND?LCM_1602_MAIN         000EH    0001H
+  +--> ?PR?LCM_READSTATUS?LCM_1602_MAIN
+
+?PR?_DISPLAYLISTCHAR?LCM_1602_MAIN          0008H    0005H
+  +--> ?PR?_DISPLAYONECHAR?LCM_1602_MAIN
+
+?PR?_DISPLAYONECHAR?LCM_1602_MAIN           000DH    0001H
+  +--> ?PR?_LCM_WRITECOMMAND?LCM_1602_MAIN
+  +--> ?PR?_LCM_WRITEDATA?LCM_1602_MAIN
+
+?PR?_LCM_WRITEDATA?LCM_1602_MAIN            000EH    0001H
+  +--> ?PR?LCM_READSTATUS?LCM_1602_MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  lcm_1602_src (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:015FH         SEGMENT       ?C_C51STARTUP
+  I:000FH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0162H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:015FH         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:015FH         LINE#         133
+  C:0161H         LINE#         134
+  C:0162H         LINE#         135
+  C:0163H         LINE#         136
+  C:0165H         LINE#         185
+  C:0168H         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+BL51 BANKED LINKER/LOCATER V6.22                                                      08/11/2013  17:20:45  PAGE 3
+
+
+
+  -------         MODULE        LCM_1602_MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0105H         PUBLIC        uctech
+  C:00B5H         PUBLIC        _DisplayOneChar
+  D:0090H         PUBLIC        P1
+  B:00B0H.4       PUBLIC        LCM_E
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  C:00D5H         PUBLIC        _LCM_WriteCommand
+  D:00B8H         PUBLIC        IP
+  C:0086H         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:0152H         PUBLIC        LCM_ReadData
+  B:00B0H.7       PUBLIC        LCM_V0
+  C:011BH         PUBLIC        LCM_ReadStatus
+  C:0130H         PUBLIC        _LCM_WriteData
+  C:010BH         PUBLIC        net
+  C:00ECH         PUBLIC        Delay400Ms
+  C:0003H         PUBLIC        LCM_Init
+  B:00B0H.6       PUBLIC        LCM_RS
+  B:00B0H.5       PUBLIC        LCM_RW
+  D:00C8H         PUBLIC        T2CON
+  C:0143H         PUBLIC        Delay5Ms
+  C:004DH         PUBLIC        _DisplayListChar
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          _LCM_WRITEDATA
+  D:000EH         SYMBOL        WDLCM
+  C:0130H         LINE#         34
+  C:0132H         LINE#         35
+  C:0132H         LINE#         36
+  C:0135H         LINE#         37
+  C:0138H         LINE#         38
+  C:013AH         LINE#         39
+  C:013CH         LINE#         40
+  C:013EH         LINE#         41
+  C:0140H         LINE#         42
+  C:0142H         LINE#         43
+  -------         ENDPROC       _LCM_WRITEDATA
+  -------         PROC          L?0028
+  -------         ENDPROC       L?0028
+  -------         PROC          _LCM_WRITECOMMAND
+  D:000EH         SYMBOL        WCLCM
+  D:0004H         SYMBOL        BuysC
+  C:00D5H         LINE#         51
+  C:00D7H         LINE#         52
+  C:00D7H         LINE#         53
+  C:00DEH         LINE#         54
+  C:00E1H         LINE#         55
+  C:00E3H         LINE#         56
+  C:00E5H         LINE#         57
+  C:00E7H         LINE#         58
+  C:00E9H         LINE#         59
+  C:00EBH         LINE#         60
+  -------         ENDPROC       _LCM_WRITECOMMAND
+BL51 BANKED LINKER/LOCATER V6.22                                                      08/11/2013  17:20:45  PAGE 4
+
+
+  -------         PROC          LCM_READDATA
+  C:0152H         LINE#         68
+  C:0152H         LINE#         69
+  C:0152H         LINE#         70
+  C:0154H         LINE#         71
+  C:0156H         LINE#         72
+  C:0158H         LINE#         73
+  C:015AH         LINE#         74
+  C:015CH         LINE#         75
+  C:015EH         LINE#         76
+  -------         ENDPROC       LCM_READDATA
+  -------         PROC          LCM_READSTATUS
+  C:011BH         LINE#         84
+  C:011BH         LINE#         85
+  C:011BH         LINE#         86
+  C:011EH         LINE#         87
+  C:0120H         LINE#         88
+  C:0122H         LINE#         89
+  C:0124H         LINE#         90
+  C:0126H         LINE#         91
+  C:0128H         LINE#         92
+  C:012DH         LINE#         93
+  C:012FH         LINE#         94
+  -------         ENDPROC       LCM_READSTATUS
+  -------         PROC          LCM_INIT
+  C:0003H         LINE#         102
+  C:0003H         LINE#         103
+  C:0003H         LINE#         104
+  C:0005H         LINE#         105
+  C:0008H         LINE#         106
+  C:000FH         LINE#         107
+  C:0012H         LINE#         108
+  C:001AH         LINE#         109
+  C:001DH         LINE#         110
+  C:0025H         LINE#         111
+  C:0028H         LINE#         112
+  C:002DH         LINE#         113
+  C:0032H         LINE#         114
+  C:003BH         LINE#         115
+  C:0044H         LINE#         116
+  -------         ENDPROC       LCM_INIT
+  -------         PROC          _DISPLAYONECHAR
+  D:0007H         SYMBOL        X
+  D:0005H         SYMBOL        Y
+  D:000DH         SYMBOL        DData
+  C:00B5H         LINE#         126
+  C:00B7H         LINE#         127
+  C:00B7H         LINE#         128
+  C:00BAH         LINE#         129
+  C:00BDH         LINE#         130
+  C:00C3H         LINE#         131
+  C:00C6H         LINE#         132
+  C:00CCH         LINE#         133
+  -------         ENDPROC       _DISPLAYONECHAR
+  -------         PROC          _DISPLAYLISTCHAR
+  D:0008H         SYMBOL        X
+  D:0009H         SYMBOL        Y
+BL51 BANKED LINKER/LOCATER V6.22                                                      08/11/2013  17:20:45  PAGE 5
+
+
+  D:000AH         SYMBOL        DData
+  -------         DO            
+  D:000CH         SYMBOL        ListLength
+  -------         ENDDO         
+  C:004DH         LINE#         142
+  C:0055H         LINE#         143
+  C:0055H         LINE#         145
+  C:0058H         LINE#         146
+  C:005BH         LINE#         147
+  C:005EH         LINE#         148
+  C:0071H         LINE#         149
+  C:0071H         LINE#         150
+  C:0078H         LINE#         151
+  C:0078H         LINE#         152
+  C:007FH         LINE#         153
+  C:0081H         LINE#         154
+  C:0083H         LINE#         155
+  C:0083H         LINE#         156
+  C:0085H         LINE#         157
+  -------         ENDPROC       _DISPLAYLISTCHAR
+  -------         PROC          DELAY5MS
+  -------         DO            
+  D:0006H         SYMBOL        TempCyc
+  -------         ENDDO         
+  C:0143H         LINE#         165
+  C:0143H         LINE#         166
+  C:0143H         LINE#         167
+  C:0147H         LINE#         168
+  C:0151H         LINE#         169
+  -------         ENDPROC       DELAY5MS
+  -------         PROC          DELAY400MS
+  -------         DO            
+  D:0005H         SYMBOL        TempCycA
+  D:0006H         SYMBOL        TempCycB
+  -------         ENDDO         
+  C:00ECH         LINE#         177
+  C:00ECH         LINE#         178
+  C:00ECH         LINE#         179
+  C:00EEH         LINE#         181
+  C:00F4H         LINE#         182
+  C:00F4H         LINE#         183
+  C:00F8H         LINE#         184
+  C:0104H         LINE#         186
+  -------         ENDPROC       DELAY400MS
+  -------         PROC          MAIN
+  C:0086H         LINE#         189
+  C:0086H         LINE#         190
+  C:0086H         LINE#         191
+  C:0089H         LINE#         192
+  C:008CH         LINE#         193
+  C:008FH         LINE#         194
+  C:0099H         LINE#         195
+  C:00A4H         LINE#         196
+  C:00ADH         LINE#         197
+  C:00B0H         LINE#         198
+  C:00B3H         LINE#         199
+  -------         ENDPROC       MAIN
+BL51 BANKED LINKER/LOCATER V6.22                                                      08/11/2013  17:20:45  PAGE 6
+
+
+  -------         ENDMOD        LCM_1602_MAIN
+
+Program Size: data=16.0 xdata=0 code=363
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
