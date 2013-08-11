@@ -356,6 +356,16 @@
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
             </File>
+            <File>
+              <FileName>lcm_1602_main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\lcm_1602_main.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcm_1602.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\lcm_1602.h</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

@@ -1,4 +1,5 @@
 "STARTUP.obj",
-"main.obj" 
+"main.obj",
+"lcm_1602_main.obj" 
 TO "serise" 
 RAMSIZE(256) 

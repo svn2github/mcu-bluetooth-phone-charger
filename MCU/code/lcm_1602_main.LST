@@ -1,4 +1,4 @@
-C51 COMPILER V9.00   LCM_1602_MAIN                                                         08/11/2013 19:41:08 PAGE 1   
+C51 COMPILER V9.00   LCM_1602_MAIN                                                         08/11/2013 19:39:06 PAGE 1   
 
 
 C51 COMPILER V9.00, COMPILATION OF MODULE LCM_1602_MAIN
@@ -62,7 +62,7 @@ line level    source
   53   1              if(BuysC) LCM_ReadStatus();//根据需要检测忙
   54   1              LCM_Data = WCLCM;
   55   1              LCM_RS = 0;
-C51 COMPILER V9.00   LCM_1602_MAIN                                                         08/11/2013 19:41:08 PAGE 2   
+C51 COMPILER V9.00   LCM_1602_MAIN                                                         08/11/2013 19:39:06 PAGE 2   
 
   56   1              LCM_RW = 0;
   57   1              LCM_E = 0;
@@ -126,7 +126,7 @@ line level    source
  115   1              LCM_WriteCommand(0x06,1);// 显示光标移动设置
  116   1              LCM_WriteCommand(0x0C,1);// 显示开及光标设置
  117   1      }
-C51 COMPILER V9.00   LCM_1602_MAIN                                                         08/11/2013 19:41:08 PAGE 3   
+C51 COMPILER V9.00   LCM_1602_MAIN                                                         08/11/2013 19:39:06 PAGE 3   
 
  118          
  119          /******************1602A按指定位置显示一个字符函数**********************/
@@ -190,7 +190,7 @@ line level    source
  177          void Delay400Ms(void)
  178          {
  179   1              uchar TempCycA = 5;
-C51 COMPILER V9.00   LCM_1602_MAIN                                                         08/11/2013 19:41:08 PAGE 4   
+C51 COMPILER V9.00   LCM_1602_MAIN                                                         08/11/2013 19:39:06 PAGE 4   
 
  180   1              unsigned int TempCycB;
  181   1              while(TempCycA--)

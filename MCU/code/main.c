@@ -1,15 +1,10 @@
-#include<reg52.h> 
+#include <reg52.h> 
 #include <stdio.h>
+#include <lcm_1602.h>
 
-const unsigned char num[10] = {0x3f, 0x06, 0x5b, 0x4f, 0x66, 0x6d, 0x7d, 0x07, 0xff, 0x6f};
+uchar code asdf[] = {"zhengzekai"};	//不加“code”声明，显示不出来，奇怪。。
 
 unsigned char flag, a, temp;
-
-void num_show(unsigned char para)
-{
-	if(para < 10)
-		P0 = num[para];
-}
 
 void uart0_init()
 {		
@@ -20,11 +15,9 @@ void uart0_init()
 	//TR2置1
 	T2CON = 0x34;
 	//串口工作模式1，接收使能
-	SCON = 0x50;
-	
+	SCON = 0x50;	
 	REN=1;    //串口允许接收
-	EA=1;     //CPU中断允许
-	
+	EA=1;     //CPU中断允许	
 	//允许串口中断
 	ES = 1;
 }
@@ -55,14 +48,20 @@ void send_str(unsigned char *s)
 void main()
 {
 	uart0_init();
+	lcm_1602_init();
 
 	P0 = 0x01;
 	temp = 0;
 
+	lcm_1602_show_string(0, 0, "helloworld=");
 	while(1){
+		lcm_1602_show_word(11, 0, temp%100/10+'0');	//十位
+		lcm_1602_show_word(12, 0, temp%10+'0');		//个位
+
 		send_str("zhengzk\t");
-		num_show(temp++);
-		if(temp == 10) temp = 0;
+
+		temp++;
+		if(temp == 100) temp = 0;
 		delay_ms(500);delay_ms(500);
 	}
 }
