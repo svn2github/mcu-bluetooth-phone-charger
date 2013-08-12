@@ -4,9 +4,10 @@
 
 uchar code asdf[] = {"zhengzekai"};	//不加“code”声明，显示不出来，奇怪。。
 
-unsigned char flag, a, temp;
+unsigned char flag, temp;
+unsigned short int uart_rx = 0;
 
-void uart0_init()
+void uart_init()
 {		
 	//9600波特率对应 FFD9H
 	RCAP2L = 0xD9;
@@ -47,37 +48,36 @@ void send_str(unsigned char *s)
 
 void main()
 {
-	uart0_init();
+	uart_init();
 	lcm_1602_init();
 
-	P0 = 0x01;
 	temp = 0;
+	flag = 0;
+	uart_rx = 0;
 
 	lcm_1602_show_string(0, 0, "helloworld=");
 	while(1){
-		lcm_1602_show_word(11, 0, temp%100/10+'0');	//十位
-		lcm_1602_show_word(12, 0, temp%10+'0');		//个位
+		lcm_1602_show_word(11, 0, uart_rx%100/10+'0');	//十位
+		lcm_1602_show_word(12, 0, uart_rx%10+'0');		//个位
 
-		send_str("zhengzk\t");
+		if(flag == 1){	//处理中断
+			flag = 0;
+		}
+		//send_str("zhengzk\t");
 
-		temp++;
-		if(temp == 100) temp = 0;
 		delay_ms(500);delay_ms(500);
 	}
 }
 
-/*
 void ser() interrupt 4
 {
 	RI=0;
-	a=SBUF;
-	//send_str("中断");
-	//send_byte(a);//注意，把打log加在这里，按原则是不可以的。但是单片机处理速度慢，处理不过来，除非用队列。
-	SBUF = 0xaa;
+	uart_rx = SBUF;
+	SBUF = uart_rx; //奇怪，这句不加就收不到数据。。。
 	while(!TI);	
 	TI = 0;
-	flag=1;
+	flag=1;	 //让主循环知道有中断了
 }
-*/
+
 
 
