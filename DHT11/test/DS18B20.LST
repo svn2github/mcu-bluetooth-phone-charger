@@ -1,0 +1,146 @@
+C51 COMPILER V9.00   DS18B20                                                               10/31/2013 22:18:22 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE DS18B20
+OBJECT MODULE PLACED IN DS18B20.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE DS18B20.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include<intrins.h>
+   3           
+   4          sbit DS18b20_DataPort=P1^1; //引脚选择
+   5          
+   6          void delay_us(unsigned int t)
+   7          {
+   8   1              for(;t>0;t--);
+   9   1      }
+  10          
+  11          bit DS18b20_reset(void)  //返回0-有设备连接1-无设备连接
+  12          {
+  13   1          unsigned char i;
+  14   1          bit RstFlag;
+  15   1           RstFlag=1;
+  16   1           DS18b20_DataPort=0;
+  17   1          delay_us(600);//器件反应时间最少480us
+  18   1           DS18b20_DataPort=1;
+  19   1           delay_us(60); //15us-60us
+  20   1           for (i=0;i<16;i++) //60us-240us
+  21   1           {
+  22   2                delay_us(15);
+  23   2                if (DS18b20_DataPort==0)
+  24   2                  RstFlag=0;
+  25   2          }
+  26   1           delay_us(240);//  低电平持续时间最少240us
+  27   1           return RstFlag;
+  28   1      }
+  29          
+  30          
+  31          
+  32          void DS1820_write(unsigned char command)
+  33          {
+  34   1          unsigned char i;
+  35   1           DS18b20_DataPort=1;
+  36   1           delay_us(1);
+  37   1           for (i=0;i<8;i++)
+  38   1           {
+  39   2                EA=0;
+  40   2               DS18b20_DataPort=0;
+  41   2                delay_us(15);
+  42   2                DS18b20_DataPort=ch&0x1;
+*** ERROR C202 IN LINE 42 OF DS18B20.C: 'ch': undefined identifier
+  43   2                EA=1;
+  44   2                delay_us(50);
+  45   2                DS18b20_DataPort=1;
+  46   2                command=command>>1;
+  47   2                delay_us(1);
+  48   2           }
+  49   1      }
+  50          
+  51          
+  52          unsigned char DS1820_read(void)
+  53          {
+  54   1          unsigned char i,date = 0;
+C51 COMPILER V9.00   DS18B20                                                               10/31/2013 22:18:22 PAGE 2   
+
+  55   1           DS18b20_DataPort = 1;
+  56   1           delay_us(1);
+  57   1           for (i = 0;i < 8;i++)
+  58   1           {
+  59   2               EA = 0;
+  60   2               DS18b20_DataPort = 0;
+  61   2               delay_us(10);
+  62   2                DS18b20_DataPort = 1;
+  63   2                delay_us(2);
+  64   2                date = date>>1;
+  65   2                if (DS18b20_DataPort == 1)
+  66   2                {
+  67   3                    date += 0x80;
+  68   3                }
+  69   2                EA = 1;
+  70   2                delay_us(50);
+  71   2       }
+  72   1       return date;
+  73   1      }
+  74          
+  75          
+  76          
+  77          void DS1820_skipROM(void)  //主机发送跳过读序列号的操作指令
+  78          {
+  79   1           DS18b20_reset();
+  80   1           DS18b20_write(0xcc);
+  81   1      }
+  82          void DS1820_startADC(void)
+  83          {
+  84   1      
+  85   1           DS18b20_reset();  //复位
+  86   1           DS18b20_write(0xcc);  //广播
+  87   1           DS18b20_write(0x44);  //启动AD转换 12bit700ms
+  88   1      }
+  89          
+  90          
+  91          
+  92          unsigned int DS1820_getTempValue(void)
+  93          {
+  94   1          unsigned char i,j;
+  95   1          unsigned int T;
+  96   1           DS18b20_skipROM();
+  97   1           DS18b20_write(0xBE); //读取温度的命令
+  98   1           i=DS18b20_read();
+  99   1           j=DS18b20_read();
+ 100   1           DS18b20_startADC();
+ 101   1           T = i+j*256;
+ 102   1           if (T==0xffff)
+ 103   1              return 0xffff;
+ 104   1           if (T>0x8000) //温度为负号
+ 105   1           {
+ 106   2                T = -T;
+ 107   2                return (0x8000+T*5/80);   // 计算温度的值
+ 108   2           }
+ 109   1           else                //温度为正值
+ 110   1                return (T*5/80);
+ 111   1      }
+ 112          
+ 113          
+ 114          //主函数
+ 115          /*
+ 116          void main(void)
+C51 COMPILER V9.00   DS18B20                                                               10/31/2013 22:18:22 PAGE 3   
+
+ 117          {   
+ 118              int w;
+ 119              Init();//系统初始化
+ 120                
+ 121                 while(1)
+ 122                 {
+ 123                  w = DS1820_getTempValue();  //将温度值送出
+ 124                  _nop_;
+ 125                  _nop_;
+ 126                  _nop_;
+ 127                 }
+ 128              //while(1);
+ 129          }
+ 130          */
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)
