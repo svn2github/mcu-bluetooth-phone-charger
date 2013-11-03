@@ -1,0 +1,231 @@
+C51 COMPILER V9.00   LCM_1602_MAIN                                                         11/03/2013 14:52:54 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE LCM_1602_MAIN
+OBJECT MODULE PLACED IN lcm_1602_main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE lcm_1602_main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /******************************************************************
+   2          ** 1602A液晶屏驱动程序
+   3          ** 晶 振 频 率:11.0592M 
+   4          ******************************************************************/
+   5          
+   6          #include <reg52.h>
+   7          #include <lcm_1602.h>
+   8          
+   9          sbit LCM_E=P3^5;//定义接口
+  10          sbit LCM_RW=P3^6;
+  11          sbit LCM_RS=P3^7;
+  12          sbit LCM_V0 = P3^3;
+  13          #define LCM_Data P2//数据接口
+  14          
+  15          void LCM_WritEDAta(uchar WDLCM);
+  16          void LCM_WriteCommand(uchar WCLCM,BuysC);
+  17          uchar LCM_ReadData(void);
+  18          uchar LCM_ReadStatus(void);
+  19          void lcm_1602_init(void);
+  20          void lcm_1602_show_word(uchar X, uchar Y, uchar DData);
+  21          void lcm_1602_show_string(uchar X, uchar Y, uchar code *DData);
+  22          void Delay5Ms(void);
+  23          void Delay400Ms(void);
+  24          
+  25          uchar code uctech[] = {"1602A"};
+  26          uchar code net[] = {"zhengzekai_test"};
+  27          
+  28          /****************************1602A写数据函数**************************/
+  29          /*函数原型:void LCM_WriteData(uchar WDLCM)
+  30          /*函数功能:1602A写数据
+  31          /*输入参数:要写入的数据
+  32          /*输出参数:无
+  33          /**********************************************************************/
+  34          void LCM_WriteData(uchar WDLCM)
+  35          {
+  36   1              LCM_ReadStatus();//检测忙
+  37   1              LCM_Data = WDLCM;
+  38   1              LCM_RS = 1;
+  39   1              LCM_RW = 0;
+  40   1              LCM_E = 0;//若晶振速度太高可以在这后加小的延时
+  41   1              LCM_E = 0;//延时
+  42   1              LCM_E = 1;
+  43   1      }
+  44          
+  45          /****************************1602A写指令函数**************************/
+  46          /*函数原型:void LCM_WriteCommand(uchar WCLCM,BuysC)
+  47          /*函数功能:1602A写指令
+  48          /*输入参数:要写入的指令
+  49          /*输出参数:无
+  50          /**********************************************************************/
+  51          void LCM_WriteCommand(uchar WCLCM,BuysC)//BuysC为0时忽略忙检测
+  52          {
+  53   1              if(BuysC) LCM_ReadStatus();//根据需要检测忙
+  54   1              LCM_Data = WCLCM;
+  55   1              LCM_RS = 0;
+C51 COMPILER V9.00   LCM_1602_MAIN                                                         11/03/2013 14:52:54 PAGE 2   
+
+  56   1              LCM_RW = 0;
+  57   1              LCM_E = 0;
+  58   1              LCM_E = 0;
+  59   1              LCM_E = 1;
+  60   1      }
+  61          
+  62          /****************************1602A读数据函数**************************/
+  63          /*函数原型:uchar LCM_ReadData(void)
+  64          /*函数功能:1602A读数据
+  65          /*输入参数:无
+  66          /*输出参数:1602A返回的数据
+  67          /**********************************************************************/
+  68          uchar LCM_ReadData(void)
+  69          {
+  70   1              LCM_RS = 1;
+  71   1              LCM_RW = 1;
+  72   1              LCM_E = 0;
+  73   1              LCM_E = 0;
+  74   1              LCM_E = 1;
+  75   1              return(LCM_Data);
+  76   1      }
+  77          
+  78          /****************************1602A读状态函数**************************/
+  79          /*函数原型:uchar LCM_ReadData(void)
+  80          /*函数功能:1602A读状态
+  81          /*输入参数:无
+  82          /*输出参数:1602A返回的状态
+  83          /**********************************************************************/
+  84          uchar LCM_ReadStatus(void)
+  85          {
+  86   1              LCM_Data = 0xFF;
+  87   1              LCM_RS = 0;
+  88   1              LCM_RW = 1;
+  89   1              LCM_E = 0;
+  90   1              LCM_E = 0;
+  91   1              LCM_E = 1;
+  92   1              while (LCM_Data & 0x80);//检测忙信号
+  93   1              return(LCM_Data);
+  94   1      }
+  95          
+  96          /****************************1602A初始化函数**************************/
+  97          /*函数原型:void lcm_1602_init(void)
+  98          /*函数功能:1602A初始化
+  99          /*输入参数:无
+ 100          /*输出参数:无
+ 101          /**********************************************************************/
+ 102          void lcm_1602_init(void)
+ 103          {
+ 104   1              LCM_V0 = 0;     //调节对比度，不然不显示
+ 105   1              LCM_Data = 0;
+ 106   1              LCM_WriteCommand(0x38,0);//三次显示模式设置，不检测忙信号
+ 107   1              Delay5Ms();
+ 108   1              LCM_WriteCommand(0x38,0);
+ 109   1              Delay5Ms();
+ 110   1              LCM_WriteCommand(0x38,0);
+ 111   1              Delay5Ms();
+ 112   1              LCM_WriteCommand(0x38,1);//显示模式设置,开始要求每次检测忙信号
+ 113   1              LCM_WriteCommand(0x08,1);//关闭显示
+ 114   1              LCM_WriteCommand(0x01,1);//显示清屏
+ 115   1              LCM_WriteCommand(0x06,1);// 显示光标移动设置
+ 116   1              LCM_WriteCommand(0x0C,1);// 显示开及光标设置
+ 117   1      }
+C51 COMPILER V9.00   LCM_1602_MAIN                                                         11/03/2013 14:52:54 PAGE 3   
+
+ 118          
+ 119          /******************1602A按指定位置显示一个字符函数**********************/
+ 120          /*函数原型:void lcm_1602_show_word(uchar X, uchar Y, uchar DData)
+ 121          /*函数功能:1602A按指定位置显示一个字符
+ 122          /*输入参数:X坐标 Y坐标 要显示的字符
+ 123          /*输出参数:无
+ 124          /**********************************************************************/
+ 125          
+ 126          void lcm_1602_show_word(uchar X, uchar Y, uchar DData)
+ 127          {
+ 128   1              Y &= 0x1;
+ 129   1              X &= 0xF;//限制X不能大于15，Y不能大于1
+ 130   1              if (Y) X |= 0x40;//当要显示第二行时地址码+0x40;
+ 131   1              X |= 0x80;// 算出指令码
+ 132   1              LCM_WriteCommand(X, 0);//这里不检测忙信号，发送地址码
+ 133   1              LCM_WriteData(DData);
+ 134   1      }
+ 135          
+ 136          /*******************1602A按指定位置显示一串字符函数*********************/
+ 137          /*函数原型:void lcm_1602_show_string(uchar X, uchar Y, uchar code *DData)
+ 138          /*函数功能:1602A按指定位置显示一个字符
+ 139          /*输入参数:X坐标 Y坐标 要显示字符串的首地址
+ 140          /*输出参数:无
+ 141          /**********************************************************************/
+ 142          void lcm_1602_show_string(uchar X, uchar Y, uchar code *DData)
+ 143          {
+ 144   1              uchar ListLength;
+ 145   1              ListLength = 0;
+ 146   1              Y &= 0x1;
+ 147   1              X &= 0xF;//限制X不能大于15，Y不能大于1
+ 148   1              while (DData[ListLength]>0x20)//若到达字串尾则退出
+ 149   1              {
+ 150   2                      if (X <= 0xF)//X坐标应小于0xF
+ 151   2                      {
+ 152   3                              lcm_1602_show_word(X, Y, DData[ListLength]);//显示单个字符
+ 153   3                              ListLength++;
+ 154   3                              X++;
+ 155   3                      }
+ 156   2              }
+ 157   1      }
+ 158          
+ 159          /********************5ms延时函数************************/
+ 160          /*函数原型:void Delay5Ms(void)
+ 161          /*函数功能:5ms延时
+ 162          /*输入参数:无
+ 163          /*输出参数:无
+ 164          /**********************************************************************/
+ 165          void Delay5Ms(void)
+ 166          {
+ 167   1              unsigned int TempCyc = 5552;
+ 168   1              while(TempCyc--);
+ 169   1      }
+ 170          
+ 171          /********************400ms延时延时函数************************/
+ 172          /*函数原型:void Delay400Ms(void)
+ 173          /*函数功能:400ms延时延时
+ 174          /*输入参数:无
+ 175          /*输出参数:无
+ 176          /**********************************************************************/
+ 177          void Delay400Ms(void)
+ 178          {
+ 179   1              uchar TempCycA = 5;
+C51 COMPILER V9.00   LCM_1602_MAIN                                                         11/03/2013 14:52:54 PAGE 4   
+
+ 180   1              unsigned int TempCycB;
+ 181   1              while(TempCycA--)
+ 182   1              {
+ 183   2                      TempCycB=7269;
+ 184   2                      while(TempCycB--);
+ 185   2              };
+ 186   1      }
+ 187          
+ 188          /***************************main**********************************/
+ 189          /*
+ 190          void main(void)
+ 191          {
+ 192                  Delay400Ms();//启动等待，等LCM讲入工作状态      
+ 193                  lcm_1602_init();//LCM初始化     
+ 194                  Delay5Ms();//延时片刻(可不要)   
+ 195                  lcm_1602_show_string(0, 0, net);        
+ 196                  lcm_1602_show_string(6, 1, uctech);
+ 197                  lcm_1602_show_word(0,1,'9');
+ 198                  LCM_ReadData();//测试用句无意义 
+ 199                  LCM_Data=255;   
+ 200                  while(1);
+ 201          }
+ 202          */
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    279    ----
+   CONSTANT SIZE    =     22    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

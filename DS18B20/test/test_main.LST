@@ -1,0 +1,143 @@
+C51 COMPILER V9.00   TEST_MAIN                                                             11/03/2013 14:52:54 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE TEST_MAIN
+OBJECT MODULE PLACED IN test_main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE test_main.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include <lcm_1602.h>
+   3          #include "dht11.h"
+   4          #include "ds18b20.h"
+   5          
+   6          sbit BUZZER = P1^0;
+   7          
+   8          unsigned char ds18b20_temp = 0;
+   9          
+  10          //中断计数标志
+  11          unsigned char flag=0;
+  12          
+  13          extern int temp_value, humi_value;
+  14          static void InitTime(void);
+  15          void Delay_1ms(unsigned int ms);
+  16          
+  17          void main()
+  18          {
+  19   1      /*
+  20   1              uchar temperature = 0;
+  21   1              //BUZZER = 0;
+  22   1              lcm_1602_init();
+  23   1              lcm_1602_show_string(0, 0, "zhengzekai");
+  24   1      
+  25   1              while(1)
+  26   1              {
+  27   1                      lcm_1602_show_word(0, 1, '0' + temperature/10);  
+  28   1                      lcm_1602_show_word(1, 1, '0' + temperature/10%10);
+  29   1              }       
+  30   1              //lcm_1602_show_string(6, 1, uctech);
+  31   1      */
+  32   1      
+  33   1              int i;
+  34   1              unsigned char mark = 1;
+  35   1              lcm_1602_init();
+  36   1      
+  37   1              //先等上电稳定
+  38   1              Delay_1ms(1000);
+  39   1              //因为读一次数据dht11 才会触发一次采集数据.
+  40   1              //即在先使用数据时采集一次数据
+  41   1              ReadTempAndHumi();
+  42   1              //因为在两次采集数据需一定的时间间隔,这里还可减少
+  43   1              Delay_1ms(3000);
+  44   1              //设定定时器
+  45   1              InitTime();
+  46   1      
+  47   1              lcm_1602_show_string(0, 0, "temp:00");
+  48   1              lcm_1602_show_string(10, 0, "ds:");
+  49   1              lcm_1602_show_string(0, 1, "hmdt:00");
+  50   1      
+  51   1              while(1)
+  52   1              {
+  53   2                      //三秒读一次温湿度
+  54   2                      if(flag == 60)
+  55   2                      {
+C51 COMPILER V9.00   TEST_MAIN                                                             11/03/2013 14:52:54 PAGE 2   
+
+  56   3                              flag = 0;
+  57   3                              mark++;
+  58   3                              ReadTempAndHumi();
+  59   3                      }
+  60   2                      if(mark % 2 == 0)
+  61   2                      {
+  62   3                              //显示温度
+  63   3                              for(i=0;i<2;i++)
+  64   3                              {
+  65   4                                      lcm_1602_show_word(5, 0, '0' + temp_value/10%10);
+  66   4                                      lcm_1602_show_word(6, 0, '0' + temp_value%10);
+  67   4                              }               
+  68   3                      }
+  69   2                      else
+  70   2                      {
+  71   3                              for(i=0;i<2;i++)
+  72   3                              {
+  73   4                                      //显示湿度
+  74   4                                      lcm_1602_show_word(5, 1, '0' + humi_value/10%10);
+  75   4                                      lcm_1602_show_word(6, 1, '0' + humi_value%10);
+  76   4                              }
+  77   3                      }
+  78   2      
+  79   2                      //for DSB18B20
+  80   2                      {
+  81   3                              tmpchange();
+  82   3                              ds18b20_temp = tmp()/16;
+  83   3                              if(ds18b20_temp<0){     //温度为负值
+  84   4                                      ds18b20_temp = 0-ds18b20_temp;
+  85   4                                      lcm_1602_show_word(13, 0, '-');
+  86   4                                      lcm_1602_show_word(14, 0, '0' + ds18b20_temp/10%10);
+  87   4                                      lcm_1602_show_word(15, 0, '0' + ds18b20_temp%10);
+  88   4                              }else{
+  89   4                                      lcm_1602_show_word(13, 0, '0' + ds18b20_temp/10%10);
+  90   4                                      lcm_1602_show_word(14, 0, '0' + ds18b20_temp%10);
+  91   4                              }
+  92   3                      }
+  93   2      
+  94   2              }
+  95   1              //return 0;     
+  96   1      }
+  97          
+  98          /***********************************************************************************/
+  99          
+ 100          //设定定时器
+ 101          static void InitTime(void)
+ 102          {
+ 103   1              TH0 = (65536-50000);                    //(unsigned char)((65535U - 50000) >> 8);
+ 104   1              TL0 = (65536-50000);                    //(unsigned char)(65535U - 50000) ;
+ 105   1              TMOD = 0X01;
+ 106   1              TR0 = 1;
+ 107   1              ET0 = 1;
+ 108   1              EA = 1;
+ 109   1      }
+ 110          
+ 111          void timer(void) interrupt 1
+ 112          {
+ 113   1              TH0 =(65535 - 50000);   // (unsigned char)((65535 - 50000) >> 8);
+ 114   1              TL0 =(65535 - 50000);   // (unsigned char)(65535 - 50000);
+ 115   1              flag++;
+ 116   1      }
+
+C51 COMPILER V9.00   TEST_MAIN                                                             11/03/2013 14:52:54 PAGE 3   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    376    ----
+   CONSTANT SIZE    =     20    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

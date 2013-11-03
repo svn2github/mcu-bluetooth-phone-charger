@@ -1,0 +1,7 @@
+"STARTUP.obj",
+"test_main.obj",
+"lcm_1602_main.obj",
+"dht11.obj",
+"DS18B20.obj" 
+TO "test" 
+RAMSIZE(256) 
