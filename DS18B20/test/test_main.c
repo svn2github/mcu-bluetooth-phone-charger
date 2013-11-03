@@ -19,7 +19,9 @@ void main()
 	int i;
 	unsigned char mark = 1;
 	lcm_1602_init();
-
+	lcm_1602_show_string(2, 0, "Booting_now");
+	lcm_1602_show_string(2, 1, "Please_wait");
+	
 	//先等上电稳定
 	Delay_1ms(1000);
 	//因为读一次数据dht11 才会触发一次采集数据.
@@ -30,6 +32,7 @@ void main()
 	//设定定时器
 	InitTime();
 
+ 	lcm_1602_init();
 	lcm_1602_show_string(0, 0, "temp:00");
 	lcm_1602_show_string(10, 0, "ds:");
 	lcm_1602_show_string(0, 1, "hmdt:00");
